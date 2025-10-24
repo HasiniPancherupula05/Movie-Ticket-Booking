@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Ticket Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .customer-name {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .customer-name input {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .movie-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .movie-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .movie-price {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .movie-discount {
+            color: #4CAF50;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quantity-control button {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s ease;
+        }
+
+        .quantity-control button:hover {
+            background: #764ba2;
+        }
+
+        .quantity-control span {
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .cart-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cart-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .payment-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .payment-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .summary {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button.primary-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button.primary-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        button.secondary-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button.secondary-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .ticket {
+            background: white;
+            border: 3px dashed #667eea;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .ticket.show {
+            display: block;
+        }
+
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 MOVIE TICKET BOOKING SYSTEM</h1>
+        <p class="subtitle">College Theater - Book Your Tickets Now!</p>
+
+        <div class="customer-name">
+            <input type="text" id="customerName" placeholder="Enter Your Name" />
+        </div>
+
+        <h2 style="color: #667eea; margin-bottom: 20px;">Available Movies</h2>
+        <div class="movies-grid" id="moviesGrid"></div>
+
+        <div class="cart-section">
+            <h2>🛒 Your Cart</h2>
+            <div id="cartItems">
+                <p class="empty-cart">Your cart is empty. Add some movies!</p>
+            </div>
+        </div>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h2 style="color: #667eea; margin-bottom: 15px;">Payment Summary</h2>
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="subtotal">Rs. 0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Discount:</span>
+                <span id="discount" style="color: #4CAF50;">- Rs. 0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Total Amount:</span>
+                <span id="total">Rs. 0.00</span>
+            </div>
+        </div>
+
+        <div id="paymentSection" style="display: none;">
+            <h2 style="color: #667eea; margin-bottom: 15px;">Select Payment Mode</h2>
+            <div class="payment-section" id="paymentOptions"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="secondary-btn" onclick="applyDiscounts()">Apply Discounts</button>
+            <button class="primary-btn" onclick="generateTicket()">Generate Ticket</button>
+        </div>
+
+        <div class="ticket" id="ticket">
+            <div class="ticket-header">
+                <h1 style="color: #667eea;">🎟️ HALL TICKET</h1>
+                <p style="color: #666;">College Theater</p>
+            </div>
+            <div id="ticketContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const movies = [
+            { name: "Pathaan", price: 350.0, discount: 0.10 },
+            { name: "KGF 2", price: 599.0, discount: 0.15 },
+            { name: "Brahmastra", price: 425.0, discount: 0.05 },
+            { name: "Drishyam 2", price: 199.0, discount: 0.10 },
+            { name: "Aadi Purush", price: 250.0, discount: 0.05 },
+            { name: "Pushpa 2", price: 525.0, discount: 0.15 },
+            { name: "Gadar 2", price: 275.0, discount: 0.20 },
+            { name: "Chhatrapati", price: 299.0, discount: 0.10 },
+            { name: "Farzi", price: 250.0, discount: 0.05 },
+            { name: "Avtaar", price: 399.0, discount: 0.10 }
+        ];
+
+        const paymentModes = ["Cash", "Credit Card", "Debit Card", "Online Payment", "Other"];
+
+        let cart = {};
+        let selectedPayment = "";
+        let discountsApplied = false;
+
+        function init() {
+            renderMovies();
+            renderPaymentOptions();
+        }
+
+        function renderMovies() {
+            const grid = document.getElementById('moviesGrid');
+            grid.innerHTML = movies.map((movie, index) => `
+                <div class="movie-card">
+                    <h3>${movie.name}</h3>
+                    <div class="movie-price">Rs. ${movie.price.toFixed(2)}</div>
+                    <div class="movie-discount">💰 ${(movie.discount * 100)}% discount available</div>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(${index}, -1)">-</button>
+                        <span id="qty-${index}">0</span>
+                        <button onclick="changeQuantity(${index}, 1)">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeQuantity(index, delta) {
+            const currentQty = cart[index] || 0;
+            const newQty = Math.max(0, currentQty + delta);
+            
+            if (newQty === 0) {
+                delete cart[index];
+            } else {
+                cart[index] = newQty;
+            }
+            
+            document.getElementById(`qty-${index}`).textContent = newQty;
+            updateCart();
+            discountsApplied = false;
+        }
+
+        function updateCart() {
+            const cartDiv = document.getElementById('cartItems');
+            const cartKeys = Object.keys(cart);
+            
+            if (cartKeys.length === 0) {
+                cartDiv.innerHTML = '<p class="empty-cart">Your cart is empty. Add some movies!</p>';
+                document.getElementById('summary').style.display = 'none';
+                document.getElementById('paymentSection').style.display = 'none';
+                return;
+            }
+
+            cartDiv.innerHTML = cartKeys.map(index => {
+                const movie = movies[index];
+                const qty = cart[index];
+                return `
+                    <div class="cart-item">
+                        <span><strong>${movie.name}</strong> x ${qty}</span>
+                        <span>Rs. ${(movie.price * qty).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+
+            updateSummary();
+            document.getElementById('summary').style.display = 'block';
+            document.getElementById('paymentSection').style.display = 'block';
+        }
+
+        function updateSummary() {
+            let subtotal = 0;
+            let discountAmount = 0;
+
+            Object.keys(cart).forEach(index => {
+                const movie = movies[index];
+                const qty = cart[index];
+                const itemTotal = movie.price * qty;
+                subtotal += itemTotal;
+                
+                if (discountsApplied) {
+                    discountAmount += itemTotal * movie.discount;
+                }
+            });
+
+            const total = subtotal - discountAmount;
+
+            document.getElementById('subtotal').textContent = `Rs. ${subtotal.toFixed(2)}`;
+            document.getElementById('discount').textContent = `- Rs. ${discountAmount.toFixed(2)}`;
+            document.getElementById('total').textContent = `Rs. ${total.toFixed(2)}`;
+        }
+
+        function renderPaymentOptions() {
+            const paymentDiv = document.getElementById('paymentOptions');
+            paymentDiv.innerHTML = paymentModes.map(mode => `
+                <div class="payment-option" onclick="selectPayment('${mode}')">
+                    ${mode}
+                </div>
+            `).join('');
+        }
+
+        function selectPayment(mode) {
+            selectedPayment = mode;
+            document.querySelectorAll('.payment-option').forEach(el => {
+                el.classList.remove('selected');
+                if (el.textContent.trim() === mode) {
+                    el.classList.add('selected');
+                }
+            });
+        }
+
+        function applyDiscounts() {
+            if (Object.keys(cart).length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            discountsApplied = true;
+            updateSummary();
+            alert('Discounts applied successfully!');
+        }
+
+        function generateTicket() {
+            const customerName = document.getElementById('customerName').value.trim();
+            
+            if (!customerName) {
+                alert('Please enter your name!');
+                return;
+            }
+
+            if (Object.keys(cart).length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            if (!selectedPayment) {
+                alert('Please select a payment mode!');
+                return;
+            }
+
+            const ticketNumber = Math.floor(Math.random() * 1000000);
+            let subtotal = 0;
+            let discountAmount = 0;
+
+            let ticketHTML = `
+                <p><strong>Customer Name:</strong> ${customerName}</p>
+                <p><strong>Ticket No:</strong> ${ticketNumber}</p>
+                <br>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 2px solid #667eea;">
+                        <th style="text-align: left; padding: 10px;">Movie</th>
+                        <th style="text-align: center; padding: 10px;">Qty</th>
+                        <th style="text-align: right; padding: 10px;">Price</th>
+                    </tr>
+            `;
+
+            Object.keys(cart).forEach(index => {
+                const movie = movies[index];
+                const qty = cart[index];
+                const itemTotal = movie.price * qty;
+                subtotal += itemTotal;
+                
+                if (discountsApplied) {
+                    discountAmount += itemTotal * movie.discount;
+                }
+
+                ticketHTML += `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 10px;">${movie.name}</td>
+                        <td style="text-align: center; padding: 10px;">${qty}</td>
+                        <td style="text-align: right; padding: 10px;">Rs. ${movie.price.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            const total = subtotal - discountAmount;
+
+            ticketHTML += `
+                </table>
+                <br>
+                <p><strong>Discount Amount:</strong> <span style="color: #4CAF50;">Rs. ${discountAmount.toFixed(2)}</span></p>
+                <p><strong>Total Amount:</strong> Rs. ${subtotal.toFixed(2)}</p>
+                <p style="font-size: 1.2em; color: #667eea;"><strong>Final Amount:</strong> Rs. ${total.toFixed(2)}</p>
+                <p><strong>Payment Mode:</strong> ${selectedPayment}</p>
+                <br>
+                <p style="text-align: center; color: #667eea; font-weight: bold;">Thank you for watching with us! 🎬</p>
+            `;
+
+            document.getElementById('ticketContent').innerHTML = ticketHTML;
+            document.getElementById('ticket').classList.add('show');
+            document.getElementById('ticket').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        init();
+    </script>
+</body>
+</html>
